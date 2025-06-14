@@ -1,90 +1,73 @@
-// Datos iniciales
-const tareasPorHacer = [];
-const tareasEnProgreso = [];
-const tareasHechas = [];
+let tareas = JSON.parse(localStorage.getItem('tareas')) || [];
 
-// Función 1: Agregar tarea
-function agregarTarea() {
-  const tarea = prompt("Ingrese el nombre de la nueva tarea:");
-  if (tarea) {
-    tareasPorHacer.push(tarea);
-    alert(`Tarea "${tarea}" agregada a 'Por hacer'.`);
-  }
+const form = document.getElementById("form-tarea");
+const inputTitulo = document.getElementById("titulo");
+const inputDescripcion = document.getElementById("descripcion");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nuevaTarea = {
+    id: Date.now(),
+    titulo: inputTitulo.value,
+    descripcion: inputDescripcion.value,
+    estado: "porHacer"
+  };
+  tareas.push(nuevaTarea);
+  guardarTareas();
+  renderizarTareas();
+  form.reset();
+});
+
+function guardarTareas() {
+  localStorage.setItem("tareas", JSON.stringify(tareas));
 }
 
-// Función 2: Mover tarea entre listas
-function moverTarea() {
-  const origen = prompt("¿Desde qué lista querés mover? (por, progreso, hecho)");
-  const destino = prompt("¿A qué lista querés moverla? (por, progreso, hecho)");
+function renderizarTareas() {
+  document.getElementById("porHacer").innerHTML = "";
+  document.getElementById("enProgreso").innerHTML = "";
+  document.getElementById("hecho").innerHTML = "";
 
-  let listaOrigen = obtenerLista(origen);
-  let listaDestino = obtenerLista(destino);
+  tareas.forEach((tarea) => {
+    const div = document.createElement("div");
+    div.classList.add("card", "mb-2");
+    div.innerHTML = `
+      <div class="card-body">
+        <h5 class="card-title">${tarea.titulo}</h5>
+        <p class="card-text">${tarea.descripcion}</p>
+        <select class="form-select mb-2" data-id="${tarea.id}">
+          <option value="porHacer" ${tarea.estado === "porHacer" ? "selected" : ""}>Por hacer</option>
+          <option value="enProgreso" ${tarea.estado === "enProgreso" ? "selected" : ""}>En progreso</option>
+          <option value="hecho" ${tarea.estado === "hecho" ? "selected" : ""}>Hecho</option>
+        </select>
+        <button class="btn btn-danger btn-sm eliminar-btn" data-id="${tarea.id}">Eliminar</button>
+      </div>
+    `;
+    document.getElementById(tarea.estado).appendChild(div);
+  });
 
-  if (!listaOrigen || !listaDestino) {
-    alert("Alguna de las listas ingresadas no es válida.");
-    return;
-  }
+  document.querySelectorAll("select").forEach((select) => {
+    select.addEventListener("change", (e) => {
+      const id = Number(e.target.getAttribute("data-id"));
+      const nuevaEstado = e.target.value;
+      const tarea = tareas.find((t) => t.id === id);
+      tarea.estado = nuevaEstado;
+      guardarTareas();
+      renderizarTareas();
+    });
+  });
 
-  const tarea = prompt(`Tareas en ${origen}: ${listaOrigen.join(", ")}\n\nIngrese el nombre exacto de la tarea a mover:`);
-
-  const index = listaOrigen.indexOf(tarea);
-  if (index !== -1) {
-    listaOrigen.splice(index, 1);
-    listaDestino.push(tarea);
-    alert(`Tarea "${tarea}" movida de ${origen} a ${destino}.`);
-  } else {
-    alert("La tarea no fue encontrada en la lista indicada.");
-  }
+  document.querySelectorAll(".eliminar-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const id = Number(e.target.getAttribute("data-id"));
+      tareas = tareas.filter((t) => t.id !== id);
+      guardarTareas();
+      renderizarTareas();
+    });
+  });
 }
 
-// Función 3: Mostrar todas las listas
-function mostrarTablero() {
-  console.log("==== TABLERO DE TAREAS ====");
-  console.log("📋 Por hacer:", tareasPorHacer);
-  console.log("🛠️ En progreso:", tareasEnProgreso);
-  console.log("✅ Hecho:", tareasHechas);
-}
+renderizarTareas();
 
-// Función auxiliar
-function obtenerLista(nombre) {
-  switch (nombre.toLowerCase()) {
-    case "por":
-      return tareasPorHacer;
-    case "progreso":
-      return tareasEnProgreso;
-    case "hecho":
-      return tareasHechas;
-    default:
-      return null;
-  }
-}
-
-// Flujo principal
-function iniciarSimulador() {
-  let continuar = true;
-
-  while (continuar) {
-    const opcion = prompt(
-      "Elige una opción:\n1. Agregar tarea\n2. Mover tarea\n3. Mostrar tablero\n4. Salir"
-    );
-
-    switch (opcion) {
-      case "1":
-        agregarTarea();
-        break;
-      case "2":
-        moverTarea();
-        break;
-      case "3":
-        mostrarTablero();
-        break;
-      case "4":
-        continuar = false;
-        break;
-      default:
-        alert("Opción no válida.");
-    }
-  }
 
   alert("¡Gracias por usar el simulador de tareas!");
 }
