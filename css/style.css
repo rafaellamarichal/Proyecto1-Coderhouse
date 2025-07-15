@@ -1,0 +1,31 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  h1 {
+    color: #343a40;
+  }
+  
+  .card {
+    text-align: left;
+  }
+  
+  form .form-label {
+    font-weight: bold;
+  }
+  
+  #porHacer, #enProgreso, #hecho {
+    min-height: 300px;
+    border-radius: 6px;
+  }
+  
+  .card-body {
+    background-color: #fff;
+    border-radius: 4px;
+  }
+  
+  .btn-danger {
+    float: right;
+  }
+  
