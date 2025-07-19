@@ -242,6 +242,25 @@ function renderizarLogros() {
   });
 }
 
+function mostrarGatito() {
+    fetch("https://api.thecatapi.com/v1/images/search")
+      .then(res => res.json())
+      .then(data => {
+        Swal.fire({
+          title: "¡Buen trabajo!",
+          imageUrl: data[0].url,
+          imageAlt: "Un gatito motivador",
+          showConfirmButton: false,
+          timer: 3000
+        });
+      })
+      .catch(error => {
+        console.error("Error al obtener el gatito:", error);
+      });
+  }
+  
+
 // Cargar tareas al inicio
+document.getElementById("btn-motivacion").addEventListener("click", mostrarGatito);
 cargarTareas();
 
