@@ -1,0 +1,19 @@
+[
+    {
+      "id": 1,
+      "titulo": "Ejemplo: Organizar escritorio",
+      "descripcion": "Limpiar y ordenar todo el escritorio",
+      "estado": "porHacer",
+      "creada": "2025-07-19T10:00:00Z",
+      "finalizada": null
+    },
+    {
+      "id": 2,
+      "titulo": "Ejemplo: Hacer ejercicio",
+      "descripcion": "30 minutos de cardio",
+      "estado": "hecho",
+      "creada": "2025-07-18T15:00:00Z",
+      "finalizada": "2025-07-19T16:00:00Z"
+    }
+  ]
+  
